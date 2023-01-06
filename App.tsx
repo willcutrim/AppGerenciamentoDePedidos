@@ -1,15 +1,10 @@
-import { NativeBaseProvider, Box } from "native-base";
+import { NativeBaseProvider } from "native-base";
+import { Produtos } from "./src/screens/Produtos";
 
 export default function App() {
   return (
     <NativeBaseProvider>
-      <Box 
-      justifyContent='center'
-      alignItems='center'
-      flex={1}
-      >
-        Vai da certo!
-      </Box>
+      <Produtos/>
     </NativeBaseProvider>
   );
 }
