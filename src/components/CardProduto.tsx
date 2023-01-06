@@ -31,5 +31,3 @@ export function CardProduto({ data}: Props){
         
     );
 }
-
-// source={{ uri: `${api.defaults.baseURL}/exercise/thumb/${data.thumb}` }}

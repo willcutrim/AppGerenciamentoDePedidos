@@ -29,7 +29,9 @@ export function Produtos(){
 
     return (
         <VStack flex={1}>
-            <ProdutosAppBar/>
+            <ProdutosAppBar
+                title='Produtos'
+            />
 
             <FlatList
                 data={produtos}
