@@ -14,9 +14,10 @@ export function CardProduto({ data}: Props){
             <Image
                 source={{ uri: `${api.defaults.baseURL}${data.photo_do_produto}` }}
                 alt="Imagem do lanche"
-                w={120}
+                w={130}
                 h={120}
                 resizeMode="center"
+                mt={2}
             />
 
             <Heading color="gray.200">{data.nome_do_produto}</Heading>

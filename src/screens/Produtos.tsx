@@ -1,18 +1,20 @@
 import { FlatList, Heading, VStack, useToast } from 'native-base'
 import { ProdutosAppBar } from '../components/AppBar';
 import { CardProduto } from '../components/CardProduto';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ProdutoDTO } from '../dtos/ProdutosDTO';
 import { api } from '../services/api';
+import { Loading } from '../components/Loading';
 
 export function Produtos(){
     const toast = useToast();
 
     const [produtos, setProdutos] = useState<ProdutoDTO[]>([]);
-    const [] = useState();
+    const [isLoading, setIsLoading] = useState(true);
 
     async function fetchProdutos(){
         try {
+            setIsLoading(true);
             const response = await api.get('produtos/api-produtos/');
             setProdutos(response.data);
         } catch (error) {
@@ -21,6 +23,8 @@ export function Produtos(){
                 placement: 'top',
                 bgColor: 'red.500',
             })
+        } finally {
+            setIsLoading(false);
         }
     }
     useEffect(() => {
@@ -33,7 +37,8 @@ export function Produtos(){
                 title='Produtos'
             />
 
-            <FlatList
+            { isLoading ? <Loading/> :
+                <FlatList
                 data={produtos}
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => (
@@ -47,7 +52,9 @@ export function Produtos(){
                         Vazio
                     </Heading>
                 )}
+                _contentContainerStyle={{ paddingBottom: 20 }}
             />
+            }
         </VStack>
     );
 }
