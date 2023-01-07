@@ -39,14 +39,15 @@ export function Produtos(){
 
             { isLoading ? <Loading/> :
                 <FlatList
-                data={produtos}
-                keyExtractor={item => item.id}
-                renderItem={({ item }) => (
-                    <CardProduto
-                        data={item}
-                    />
-                    
-                )}
+                    data={produtos}
+                    keyExtractor={item => item.id}
+                    renderItem={({ item }) => (
+                        <CardProduto
+                            data={item}
+                            produtoId={item.id}
+                        />
+                        
+                    )}
                 ListEmptyComponent={(
                     <Heading flex={1} justifyContent="center" alignItems='center'>
                         Vazio

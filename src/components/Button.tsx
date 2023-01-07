@@ -18,8 +18,8 @@ export function ButtonB({title, variant = "solid", ...rest}: Props){
             _pressed={{
                 bg: variant === "outline" ? "gray.500" : "green.500"
             }}
-            {...rest}
             mb={6}
+            {...rest}
         >
 
             <Text 
