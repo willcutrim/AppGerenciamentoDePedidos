@@ -3,18 +3,21 @@ import { ButtonB } from './Button';
 import { ProdutoDTO } from '../dtos/ProdutosDTO';
 import { api } from '../services/api';
 import { useState } from 'react';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PEDIDOS_COLLETION } from '../storage/storageConfig';
+import { storagePedidoDelete } from '../storage/pedidos/pedidoDelete';
 import { pedidoCreate } from '../storage/pedidos/pedidosCreate';
-import { pedidosGetAll } from '../storage/pedidos/pedidosGetAll';
 
 type Props = {
     data: ProdutoDTO;
-    produtoId: string;
+    onpress?: () => void;
 }
 
 
-export function CardProduto({ data, produtoId }: Props){
+export function CardProduto({ data, onpress }: Props){
     const toast = useToast();
-    const [pedido, setPedido] = useState<ProdutoDTO[]>([data]);
+    const [pedido, setPedido] = useState<ProdutoDTO[]>([]);
     const [submiteRegister, setSubmiteRegister] = useState(false);
 
     async function handleAddPedido(){
@@ -24,15 +27,22 @@ export function CardProduto({ data, produtoId }: Props){
             // const response = await api.post('pedidos/api-pedidos/', {
                 
             // });
-            // toast.show({
-            //     title: `${id.nome_do_produto} adicionado`,
-            //     placement: 'top',
-            //     bgColor: 'green.500',
-            // })
             
-            // await pedidoCreate(data.nome_do_produto);
-            const pedidos = await pedidosGetAll();
-            console.log(pedidos);
+            const response = await AsyncStorage.getItem(PEDIDOS_COLLETION);
+            const rersponseData = response ? JSON.parse(response) : [];
+            
+            const dados = JSON.stringify([...rersponseData, data])
+            
+            await AsyncStorage.setItem(PEDIDOS_COLLETION, dados);
+            
+            toast.show({
+                title: `dicionado`,
+                placement: 'top',
+                bgColor: 'green.500',
+                
+            })
+            
+            console.log(dados);
         } catch (error) {
 
             toast.show({
@@ -44,9 +54,10 @@ export function CardProduto({ data, produtoId }: Props){
             setSubmiteRegister(false);
         }
     }
+
     return (
         
-        <VStack alignItems='center' bg="#663399" m={6} rounded={14}>
+        <VStack alignItems='center' justifyContent="center" bg="#663399" mr={6} ml={6} mt={6} rounded={14}>
             <Image
                 source={{ uri: `${api.defaults.baseURL}${data.photo_do_produto}` }}
                 alt="Imagem do lanche"
@@ -65,6 +76,8 @@ export function CardProduto({ data, produtoId }: Props){
                 title='Adicionar'
                 onPress={handleAddPedido}
                 isLoading={submiteRegister}
+                largura={32}
+                altura={12}
             />
         </VStack>
         

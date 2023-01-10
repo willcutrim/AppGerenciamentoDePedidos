@@ -1,16 +1,25 @@
 import { FlatList, Heading, VStack, useToast } from 'native-base'
-import { ProdutosAppBar } from '../components/AppBar';
+import { AppBar } from '../components/AppBar';
 import { CardProduto } from '../components/CardProduto';
 import React, { useEffect, useState } from 'react';
 import { ProdutoDTO } from '../dtos/ProdutosDTO';
 import { api } from '../services/api';
 import { Loading } from '../components/Loading';
 
+import { useNavigation } from '@react-navigation/native';
+import { AppNavigatorRoutesProps } from '../routes/app.routes';
+
 export function Produtos(){
     const toast = useToast();
 
+    const navigation = useNavigation<AppNavigatorRoutesProps>();
+
     const [produtos, setProdutos] = useState<ProdutoDTO[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+
+    async function handleNavigatio(){
+        navigation.navigate('carrinho');
+    }
 
     async function fetchProdutos(){
         try {
@@ -27,14 +36,16 @@ export function Produtos(){
             setIsLoading(false);
         }
     }
+    
     useEffect(() => {
         fetchProdutos();
     }, [])
 
     return (
         <VStack flex={1}>
-            <ProdutosAppBar
+            <AppBar
                 title='Produtos'
+                onpress={handleNavigatio}
             />
 
             { isLoading ? <Loading/> :
@@ -44,7 +55,6 @@ export function Produtos(){
                     renderItem={({ item }) => (
                         <CardProduto
                             data={item}
-                            produtoId={item.id}
                         />
                         
                     )}

@@ -6,8 +6,8 @@ export async function pedidosGetAll() {
     try {
         const storage = await AsyncStorage.getItem(PEDIDOS_COLLETION);
     
-        const pedidos: string[] = storage ? JSON.parse(storage) : [];
-    
+        const pedidos = storage ? JSON.parse(storage) : [];
+        
         return pedidos;
     } catch (error) {
         return error;

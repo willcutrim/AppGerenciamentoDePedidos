@@ -1,5 +1,5 @@
 import { NativeBaseProvider, StatusBar } from "native-base";
-import { Produtos } from "./src/screens/Produtos";
+import { Routes } from "./src/routes";
 
 export default function App() {
   return (
@@ -9,7 +9,7 @@ export default function App() {
         backgroundColor='transparent'
         translucent
       />
-      <Produtos/>
+      <Routes/>
     </NativeBaseProvider>
   );
 }
