@@ -65,6 +65,7 @@ export function Produtos(){
                     </Heading>
                 )}
                 _contentContainerStyle={{ paddingBottom: 20 }}
+                
             />
             }
         </VStack>

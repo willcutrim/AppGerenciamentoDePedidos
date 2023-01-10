@@ -1,48 +1,56 @@
 import { VStack, Image, Heading, Text, Button, useToast } from 'native-base';
 import { ButtonB } from './Button';
-import { ProdutoDTO } from '../dtos/ProdutosDTO';
+import { ProdutoDTO } from '../dtos/ProdutosDTO'
 import { api } from '../services/api';
 import { useState } from 'react';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { PEDIDOS_COLLETION } from '../storage/storageConfig';
-import { storagePedidoDelete } from '../storage/pedidos/pedidoDelete';
-import { pedidoCreate } from '../storage/pedidos/pedidosCreate';
+import uuid from "react-native-uuid"
 
+import { useAsyncStorage } from '@react-native-async-storage/async-storage';
+import { PEDIDOS_COLLETION } from '../storage/storageConfig';
+
+const id = uuid.v4();
 type Props = {
     data: ProdutoDTO;
     onpress?: () => void;
+    
 }
 
 
 export function CardProduto({ data, onpress }: Props){
     const toast = useToast();
-    const [pedido, setPedido] = useState<ProdutoDTO[]>([]);
     const [submiteRegister, setSubmiteRegister] = useState(false);
 
+    const { getItem, setItem } = useAsyncStorage(PEDIDOS_COLLETION);
+
     async function handleAddPedido(){
+        const uid = uuid.v4();
         try {
             setSubmiteRegister(true);
             
-            // const response = await api.post('pedidos/api-pedidos/', {
-                
-            // });
-            
-            const response = await AsyncStorage.getItem(PEDIDOS_COLLETION);
+            const newData ={
+                uid,
+                id: data.id,
+                descricao_do_produto: data.descricao_do_produto,
+                nome_do_produto: data.nome_do_produto,
+                photo_do_produto: data.photo_do_produto,
+                valor_do_produto: data.valor_do_produto,
+                categoria: data.categoria
+            }
+
+            const response = await getItem();
             const rersponseData = response ? JSON.parse(response) : [];
             
-            const dados = JSON.stringify([...rersponseData, data])
-            
-            await AsyncStorage.setItem(PEDIDOS_COLLETION, dados);
+            const dados = JSON.stringify([...rersponseData, newData])
+            // console.log(newData);
+            await setItem(dados);
             
             toast.show({
-                title: `dicionado`,
+                title: `Produto adicionado`,
                 placement: 'top',
                 bgColor: 'green.500',
-                
             })
             
-            console.log(dados);
         } catch (error) {
 
             toast.show({
