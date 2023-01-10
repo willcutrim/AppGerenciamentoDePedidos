@@ -5,10 +5,11 @@ import { TouchableOpacity } from 'react-native';
 
 type Props = {
     title: string;
+    icon: string;
     onpress: () => void;
 }
 
-export function AppBar({ title, onpress }: Props){
+export function AppBar({ title, icon ,onpress }: Props){
     return (
         <HStack 
             bg="#663399" 
@@ -24,7 +25,7 @@ export function AppBar({ title, onpress }: Props){
             <TouchableOpacity onPress={onpress}>
                 <Icon
                 as={MaterialIcons}
-                name="shopping-cart"
+                name={icon}
                 color="#FFFFFF"
                 size={7}
                 />

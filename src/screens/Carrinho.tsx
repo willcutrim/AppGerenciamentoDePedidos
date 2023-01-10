@@ -61,7 +61,7 @@ export function Carrinho(){
 
     return (
         <VStack flex={1}>
-            <AppBar title="Carrinho" onpress={handleNavigatio}/>
+            <AppBar title="Carrinho" onpress={handleNavigatio} icon="arrow-back"/>
             {
             isLoading ? <Loading/> :
             

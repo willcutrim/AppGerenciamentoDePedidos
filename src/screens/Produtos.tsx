@@ -46,6 +46,7 @@ export function Produtos(){
             <AppBar
                 title='Produtos'
                 onpress={handleNavigatio}
+                icon="shopping-cart"
             />
 
             { isLoading ? <Loading/> :
