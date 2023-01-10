@@ -1,4 +1,5 @@
 export type ProdutoDTO = {
+    uid: string;
     id: string,
     nome_do_produto: string,
     valor_do_produto: string,

@@ -1,14 +1,14 @@
-import { FlatList, VStack, Text, Center, SectionList, Box } from "native-base";
+import { FlatList, VStack, Text, Center, Box } from "native-base";
 import { AppBar } from "../components/AppBar";
-import { CardProduto } from "../components/CardProduto";
+
 import { useEffect, useState } from "react";
-import { pedidosGetAll } from "../storage/pedidos/pedidosGetAll";
+
 import { ProdutoDTO } from "../dtos/ProdutosDTO";
 import { CardPedido } from "../components/CardPedido";
 import { Loading } from "../components/Loading";
 import { PEDIDOS_COLLETION } from "../storage/storageConfig";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAsyncStorage } from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "../routes/app.routes";
 import { storagePedidoDelete } from "../storage/pedidos/pedidoDelete";
@@ -21,19 +21,40 @@ export function Carrinho(){
     const navigation = useNavigation<AppNavigatorRoutesProps>();
     const [pedido, setPedido] = useState<ProdutoDTO[]>([])
 
+    const { getItem, setItem } = useAsyncStorage(PEDIDOS_COLLETION);
+
     async function cleanItems(){
         try {
+            setIsLoading(true);
             await storagePedidoDelete();
+            const response = await getItem();
+	        const previousData = response ? JSON.parse(response) : [];
 
+            setPedido(previousData);
         } catch (error) {
             throw error;
+        } finally {
+            setIsLoading(false);
         }
     }
+    async function handleRemoveItem(uid: string){
+        try {
+            setIsLoading(true);
 
-    function setItemId(){
-        console.log(pedido);
+	        const response = await getItem();
+	        const previousData = response ? JSON.parse(response) : [];
+	
+	        const data = previousData.filter((item: ProdutoDTO) => item.uid !== uid);
+	        setItem(JSON.stringify(data));
+
+            setPedido(data);
+        } catch (error) {
+            throw error;
+        } finally {
+            setIsLoading(false);
+        }
+
     }
-    
 
     async function handleNavigatio(){
         navigation.goBack();
@@ -43,7 +64,7 @@ export function Carrinho(){
         try {
             setIsLoading(true);
             
-            const storage =  await AsyncStorage.getItem(PEDIDOS_COLLETION);
+            const storage =  await getItem();
 
             const pedidos = storage ? JSON.parse(storage) : [];
 
@@ -67,14 +88,12 @@ export function Carrinho(){
             
             
             <FlatList
-                mb={2}
                 data={pedido}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item.uid}
                 renderItem={({ item }) => (
                     <CardPedido
                         data={item}
-                        produtoId={item.id}
-                        onpress={setItemId}
+                        onpress={() =>handleRemoveItem(item.uid)}
                     />
                     )}
                     ListEmptyComponent={() => (
@@ -84,6 +103,7 @@ export function Carrinho(){
                             </Text>
                         </Center>
                       )}
+                      _contentContainerStyle={{ paddingBottom: 20 }}
             />
         }
         <Box alignItems="center">
