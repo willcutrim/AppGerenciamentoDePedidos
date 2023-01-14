@@ -13,7 +13,12 @@ export function Produtos(){
     const toast = useToast();
 
     const navigation = useNavigation<AppNavigatorRoutesProps>();
-
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjczNjI1NjgwLCJpYXQiOjE2NzM2MjQyMDUsImp0aSI6IjgxMGVjNmFkYjJmNzRiNTVhNWZlODdmMmYzYTU3ZmNjIiwidXNlcl9pZCI6Mn0.lrl4qCcn2axB8c5xQzFnlJsl-UEbItubO0-VaSZPl2o";
+    let config = {
+        headers:{
+            'Authorization': `Bearer ${token}`
+        }
+    }
     const [produtos, setProdutos] = useState<ProdutoDTO[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -24,7 +29,7 @@ export function Produtos(){
     async function fetchProdutos(){
         try {
             setIsLoading(true);
-            const response = await api.get('produtos/api-produtos/');
+            const response = await api.get('produtos/api-produtos/', config);
             setProdutos(response.data);
         } catch (error) {
             toast.show({
