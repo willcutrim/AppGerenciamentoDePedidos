@@ -1,4 +1,4 @@
-import { FlatList, Heading, VStack, useToast } from 'native-base'
+import { Box, FlatList, Heading, VStack, useToast } from 'native-base'
 import { AppBar } from '../components/AppBar';
 import { CardProduto } from '../components/CardProduto';
 import React, { useEffect, useState } from 'react';
@@ -65,9 +65,11 @@ export function Produtos(){
                         
                     )}
                 ListEmptyComponent={(
-                    <Heading flex={1} justifyContent="center" alignItems='center'>
-                        Vazio
-                    </Heading>
+                    <Box flex={1} alignItems="center" mt={8}>
+                        <Heading>
+                            Vazio
+                        </Heading>
+                    </Box>
                 )}
                 _contentContainerStyle={{ paddingBottom: 20 }}
                 
