@@ -8,7 +8,7 @@ import { SignIn } from '../screens/SignIn';
 type AppRoutes = {
     produtos: undefined;
     carrinho: undefined;
-    splash: undefined;
+    signIn: undefined;
 }
 
 export type AppNavigatorRoutesProps = NativeStackNavigationProp<AppRoutes>;
@@ -25,6 +25,10 @@ export function AppRoutes(){
             <Screen
                 name='carrinho'
                 component={Carrinho}
+            />
+            <Screen
+                name='signIn'
+                component={SignIn}
             />
         </Navigator>
     );

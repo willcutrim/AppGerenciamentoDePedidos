@@ -12,9 +12,9 @@ export async function storageUserSave(user: UserDTO){
 export async function storageUserGet(){
     const storage =  await getItem(USER_STORAGE);
 
-    const user = storage ? JSON.parse(storage) : {};
+    const user: UserDTO = storage ? JSON.parse(storage) : {};
 
-    return user
+    return user;
 }
 
 export async function storageUserDelete(){

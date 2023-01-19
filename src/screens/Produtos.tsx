@@ -8,29 +8,36 @@ import { Loading } from '../components/Loading';
 
 import { useNavigation } from '@react-navigation/native';
 import { AppNavigatorRoutesProps } from '../routes/app.routes';
+import { storageAuthTokenGet } from '../storage/storageAuthToken';
 
 export function Produtos(){
     const toast = useToast();
 
     const navigation = useNavigation<AppNavigatorRoutesProps>();
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjczNjI1NjgwLCJpYXQiOjE2NzM2MjQyMDUsImp0aSI6IjgxMGVjNmFkYjJmNzRiNTVhNWZlODdmMmYzYTU3ZmNjIiwidXNlcl9pZCI6Mn0.lrl4qCcn2axB8c5xQzFnlJsl-UEbItubO0-VaSZPl2o";
-    let config = {
-        headers:{
-            'Authorization': `Bearer ${token}`
-        }
-    }
+    
     const [produtos, setProdutos] = useState<ProdutoDTO[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    async function handleNavigatio(){
+    function handleNavigatio(){
         navigation.navigate('carrinho');
     }
 
     async function fetchProdutos(){
         try {
             setIsLoading(true);
+            
+            const token = await storageAuthTokenGet();
+            // console.log(token['refreshToken']);
+            let config = {
+                headers:{
+                    'Authorization': `Bearer ${token['token']}`
+                }
+            }
+
             const response = await api.get('produtos/api-produtos/', config);
+            console.log(response.status);
             setProdutos(response.data);
+            
         } catch (error) {
             toast.show({
                 title: 'deu merda',

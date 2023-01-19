@@ -4,14 +4,15 @@ import { AUTH_TOKEN_STORAGE } from "./storageConfig";
 
 const { setItem, getItem, removeItem } = AsyncStorage;
 
-export async function storageAuthTokenSave(token: string){
-    await setItem(AUTH_TOKEN_STORAGE, token);
+export async function storageAuthTokenSave(token: string, refreshToken: string){
+    await setItem(AUTH_TOKEN_STORAGE, JSON.stringify({token, refreshToken}));
 }
 
 export async function storageAuthTokenGet(){
     const token = await getItem(AUTH_TOKEN_STORAGE);
-
-    return token
+    const token_list = token ? JSON.parse(token) : {};
+    // console.log(`token: ${token_list['token']}`);
+    return token_list
 }
 
 

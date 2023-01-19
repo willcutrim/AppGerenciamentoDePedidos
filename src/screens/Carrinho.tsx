@@ -13,6 +13,8 @@ import { useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "../routes/app.routes";
 import { storagePedidoDelete } from "../storage/pedidos/pedidoDelete";
 import { ButtonB } from "../components/Button";
+import { storageUserDelete, storageUserGet } from "../storage/storageUser";
+import { storageAuthTokenDelete, storageAuthTokenGet } from "../storage/storageAuthToken";
 
 
 export function Carrinho(){
@@ -31,6 +33,7 @@ export function Carrinho(){
 	        const previousData = response ? JSON.parse(response) : [];
 
             setPedido(previousData);
+            
         } catch (error) {
             throw error;
         } finally {
@@ -41,12 +44,12 @@ export function Carrinho(){
         try {
             setIsLoading(true);
 
+            
 	        const response = await getItem();
 	        const previousData = response ? JSON.parse(response) : [];
 	
 	        const data = previousData.filter((item: ProdutoDTO) => item.uid !== uid);
 	        setItem(JSON.stringify(data));
-
             setPedido(data);
         } catch (error) {
             throw error;

@@ -4,8 +4,15 @@ import { Controller, useForm } from 'react-hook-form';
 import { Input } from "../components/Input";
 import { ButtonB } from "../components/Button";
 import { api } from "../services/api";
-import { useState } from "react";
-import { storageUserSave } from "../storage/storageUser";
+import { useCallback, useEffect, useState } from "react";
+import { storageUserGet, storageUserSave } from "../storage/storageUser";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { AppNavigatorRoutesProps } from "../routes/app.routes";
+import { storageAuthTokenGet, storageAuthTokenSave } from "../storage/storageAuthToken";
+import { UserDTO } from "../dtos/UserDTO";
+
+import { useAuth } from "../hooks/useAuth";
+import { AppError } from "../utils/AppError";
 
 type FormDataProps = {
     username: string;
@@ -14,39 +21,35 @@ type FormDataProps = {
 
 
 
-export function SignIn(){
+export function SignIn() {
 
-    const { control, handleSubmit, formState: {errors} } = useForm<FormDataProps>();
-    const [isLoading, setIsLoading ] = useState(false);
+    const [user, setUsername] = useState<UserDTO>();
+    const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>();
+    const [isLoading, setIsLoading] = useState(false);
+    const { signIn } = useAuth();
     const toast = useToast();
+    const navigation = useNavigation<AppNavigatorRoutesProps>();
 
-    async function handleSignIn({ username, password }: FormDataProps){
-        
+    async function handleSignIn({ username, password }: FormDataProps) {
         try {
             setIsLoading(true);
-            const { data } = await api.post('usuario/api-login/', 
-            { 
-                username, password 
-            });
-
-            if(data.message === "Usuário ou senha inválida."){
-                toast.show({
-                    title: data.message,
-                    placement: "top",
-                    bgColor: 'red.500'
-                })
-            } else {
-                await storageUserSave(data.username);
-            }
+            await signIn(username, password);
             
         } catch (error) {
-            throw error
-        }finally {
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : "Não foi possivel entrar. Tente mais tarde";
+            toast.show({
+                title,
+                placement: 'top',
+                bgColor: 'red.500'
+            })
+        } finally {
             setIsLoading(false);
         }
     }
 
     return (
+        
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} bg="#663399">
             <VStack flex={1} px={10} alignItems='center' justifyContent='center'>
 
@@ -62,7 +65,7 @@ export function SignIn(){
                         rules={{
                             required: 'Preencha este campo'
                         }}
-                        render={({ field: { onChange } }) =>(
+                        render={({ field: { onChange } }) => (
                             <Input
                                 placeholder="Usuário"
                                 placeholderTextColor='gray.500'
@@ -78,7 +81,7 @@ export function SignIn(){
                         rules={{
                             required: 'Preencha este campo'
                         }}
-                        render={({ field: { onChange } }) =>(
+                        render={({ field: { onChange } }) => (
                             <Input
                                 placeholder="Senha"
                                 placeholderTextColor='gray.500'
@@ -88,7 +91,7 @@ export function SignIn(){
                             />
                         )}
                     />
-                    
+
                     <ButtonB
                         title='Acessar'
                         largura="full"
@@ -99,5 +102,6 @@ export function SignIn(){
                 </Box>
             </VStack>
         </ScrollView>
+
     );
 }
