@@ -23,7 +23,7 @@ export function Routes() {
       const data = await storageUserGet();
       setUser(data);
 
-      console.log(`asdas ${user.username}`);
+      // console.log(`asdas ${user.username}`);
 
     } catch (error) {
       throw error;

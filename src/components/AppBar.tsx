@@ -3,12 +3,10 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 import { TouchableOpacity } from 'react-native';
 import { useEffect, useState } from 'react';
-import { storageUserDelete, storageUserGet } from '../storage/storageUser';
+import { storageUserGet } from '../storage/storageUser';
 import { UserDTO } from '../dtos/UserDTO';
-import { storageAuthTokenDelete, storageAuthTokenGet } from '../storage/storageAuthToken';
-import { useNavigation } from '@react-navigation/native';
-import { AuthNavigatorRoutesProps } from '../routes/auth.routes';
-import { AppNavigatorRoutesProps } from '../routes/app.routes';
+
+import { useAuth } from '../hooks/useAuth';
 
 type Props = {
     title: string;
@@ -19,20 +17,14 @@ type Props = {
 export function AppBar({ title, icon ,onpress }: Props){
     const [isLoading, setIsLoading] = useState(false);
     const [user, setUser] = useState<UserDTO>();
-    const navigation = useNavigation<AppNavigatorRoutesProps>();
+    const { signOut } = useAuth();
+
     async function logOut(){
         try {
 
             setIsLoading(true);
-            setUser({} as UserDTO);
-            await storageUserDelete();
-            await storageAuthTokenDelete();
 
-            const user = await storageUserGet();
-            console.log(user.id)
-            
-            // const token = await storageAuthTokenGet();
-            // console.log(`usuario: ${user.username},\n${token['token']}`);
+            await signOut();
             
         } catch (error) {
             throw error;

@@ -1,18 +1,16 @@
-import { Box, Center, Heading, ScrollView, VStack, useToast } from "native-base";
+import { Box, Heading, ScrollView, VStack, useToast } from "native-base";
 import { Controller, useForm } from 'react-hook-form';
 
 import { Input } from "../components/Input";
 import { ButtonB } from "../components/Button";
-import { api } from "../services/api";
-import { useCallback, useEffect, useState } from "react";
-import { storageUserGet, storageUserSave } from "../storage/storageUser";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { AppNavigatorRoutesProps } from "../routes/app.routes";
-import { storageAuthTokenGet, storageAuthTokenSave } from "../storage/storageAuthToken";
+
+import { useState } from "react";
+
 import { UserDTO } from "../dtos/UserDTO";
 
 import { useAuth } from "../hooks/useAuth";
 import { AppError } from "../utils/AppError";
+
 
 type FormDataProps = {
     username: string;
@@ -20,20 +18,19 @@ type FormDataProps = {
 }
 
 
-
 export function SignIn() {
 
     const [user, setUsername] = useState<UserDTO>();
     const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>();
     const [isLoading, setIsLoading] = useState(false);
-    const { signIn } = useAuth();
+    const { login } = useAuth();
     const toast = useToast();
-    const navigation = useNavigation<AppNavigatorRoutesProps>();
+
 
     async function handleSignIn({ username, password }: FormDataProps) {
         try {
             setIsLoading(true);
-            await signIn(username, password);
+            await login(username, password);
             
         } catch (error) {
             const isAppError = error instanceof AppError;
@@ -42,7 +39,8 @@ export function SignIn() {
                 title,
                 placement: 'top',
                 bgColor: 'red.500'
-            })
+            });
+            console.log(error)
         } finally {
             setIsLoading(false);
         }
