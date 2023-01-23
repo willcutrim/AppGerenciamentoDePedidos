@@ -1,13 +1,17 @@
 import { ReactNode, createContext, useEffect, useState } from "react";
 import { UserDTO } from "../dtos/UserDTO";
 import { api } from "../services/api";
-import { useToast } from "native-base";
-import { storageUserGet, storageUserSave } from "../storage/storageUser";
-import { storageAuthTokenGet, storageAuthTokenSave } from "../storage/storageAuthToken";
+
+import { storageUserDelete, storageUserGet, storageUserSave } from "../storage/storageUser";
+import { storageAuthTokenDelete, storageAuthTokenGet, storageAuthTokenSave } from "../storage/storageAuthToken";
+import { TokensDTO } from "../dtos/TokensDTO";
+
 
 export type AuthContextDataProps = {
     user: UserDTO;
-    signIn: (username: string, password: string) => Promise<void>;
+    tokens: TokensDTO;
+    login: (username: string, password: string) => Promise<void>;
+    signOut: () => Promise<void>;
 }
 
 type AuthContextProviderProps = {
@@ -17,17 +21,21 @@ type AuthContextProviderProps = {
 export const AuthContext = createContext<AuthContextDataProps>({} as AuthContextDataProps);
 
 export function AuthContextProvider({ children }: AuthContextProviderProps){
-    const [user, setUser] = useState<UserDTO>({} as UserDTO);
-    const toast = useToast();
     
-    async function signIn(username: string, password: string){
-        try {
-            const { data } = await api.post('usuario/api-login/',{ username, password });
+    const [user, setUser] = useState<UserDTO>({} as UserDTO);
+    const [ tokens, setTokens] = useState<TokensDTO>({} as TokensDTO);
 
+    async function login(username: string, password: string){
+        try {
+            const { data } = await api.post('usuario/api-login/', { username, password });
             if(data.user){
+                // console.log(`pegando do contex => ${data.tokens.access}`);
                 setUser(data.user);
+                setTokens(data.tokens.access);
+
                 await storageUserSave(data.user);
                 await storageAuthTokenSave(data.tokens.access, data.tokens.refresh);
+               
                 
             }
             
@@ -36,19 +44,39 @@ export function AuthContextProvider({ children }: AuthContextProviderProps){
         }
     }
 
-    async function loadUserData(){
-      const userLogged = await storageUserGet();
+    async function signOut(){
+        try {
+            setUser({} as UserDTO);
+            await storageUserDelete();
+            await storageAuthTokenDelete();
+        } catch (error) {
+            throw error;
+        }
+    }
 
-      if(userLogged){
-        setUser(userLogged);
-      }
+    async function loadUserData(){
+        try {
+            const userLogged = await storageUserGet();
+            const tokenLogged = await storageAuthTokenGet();
+        
+            if(userLogged && tokenLogged){
+                // console.log('passou aqui')
+                setTokens(tokenLogged);
+                setUser(userLogged);
+                
+            }
+        } catch (error) {
+	        throw error
+        }
     }
 
     useEffect(() => {
         loadUserData();
     }, [])
+
+    
     return (
-        <AuthContext.Provider value={{user, signIn}}>
+        <AuthContext.Provider value={{user, tokens, login, signOut}}>
             {children}
         </AuthContext.Provider>
     );

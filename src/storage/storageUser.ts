@@ -18,5 +18,5 @@ export async function storageUserGet(){
 }
 
 export async function storageUserDelete(){
-    await AsyncStorage.removeItem(USER_STORAGE);
+    await removeItem(USER_STORAGE);
 }

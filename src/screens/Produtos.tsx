@@ -9,6 +9,8 @@ import { Loading } from '../components/Loading';
 import { useNavigation } from '@react-navigation/native';
 import { AppNavigatorRoutesProps } from '../routes/app.routes';
 import { storageAuthTokenGet } from '../storage/storageAuthToken';
+import { TokensDTO } from '../dtos/TokensDTO';
+import { useAuth } from '../hooks/useAuth';
 
 export function Produtos(){
     const toast = useToast();
@@ -16,27 +18,24 @@ export function Produtos(){
     const navigation = useNavigation<AppNavigatorRoutesProps>();
     
     const [produtos, setProdutos] = useState<ProdutoDTO[]>([]);
+    const { tokens } = useAuth();
     const [isLoading, setIsLoading] = useState(true);
 
     function handleNavigatio(){
         navigation.navigate('carrinho');
     }
-
+    
     async function fetchProdutos(){
         try {
-            setIsLoading(true);
-            
-            const token = await storageAuthTokenGet();
-            // console.log(token['refreshToken']);
+            setIsLoading(true);            
+
             let config = {
                 headers:{
-                    'Authorization': `Bearer ${token['token']}`
+                    'Authorization': `Bearer ${tokens?.token}`
                 }
             }
-
-            const response = await api.get('produtos/api-produtos/', config);
-            console.log(response.status);
-            setProdutos(response.data);
+            const { data } = await api.get('produtos/api-produtos/', config);
+            setProdutos(data);
             
         } catch (error) {
             toast.show({
@@ -48,10 +47,12 @@ export function Produtos(){
             setIsLoading(false);
         }
     }
-    
+
     useEffect(() => {
         fetchProdutos();
     }, [])
+
+    
 
     return (
         <VStack flex={1}>
