@@ -16,8 +16,8 @@ type Props = {
 
 export function AppBar({ title, icon ,onpress }: Props){
     const [isLoading, setIsLoading] = useState(false);
-    const [user, setUser] = useState<UserDTO>();
-    const { signOut } = useAuth();
+    const [userata, setUser] = useState<UserDTO>();
+    const { signOut, user } = useAuth();
 
     async function logOut(){
         try {
@@ -35,9 +35,9 @@ export function AppBar({ title, icon ,onpress }: Props){
 
     async function nameUser(){
         try {
-	        const name = await storageUserGet();
+	        // const name = await storageUserGet();
 
-            setUser(name);
+            setUser(user);
         } catch (error) {
             throw error;
         }
@@ -67,7 +67,7 @@ export function AppBar({ title, icon ,onpress }: Props){
                 />
             </TouchableOpacity>
 
-            <Heading color="white">{title} - {user?.username}</Heading>
+            <Heading color="white">{title} - {userata?.username}</Heading>
 
             <TouchableOpacity onPress={onpress}>
                 <Icon

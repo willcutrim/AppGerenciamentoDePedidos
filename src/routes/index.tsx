@@ -6,12 +6,12 @@ import { useEffect, useState } from 'react';
 import { storageUserGet } from '../storage/storageUser';
 import { AuthRoutes } from './auth.routes';
 import { Loading } from '../components/Loading';
-import { UserDTO } from '../dtos/UserDTO';
+
 import { useAuth } from '../hooks/useAuth';
+
 
 export function Routes() {
 
-  const [username, setUser] = useState<UserDTO>();
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
 
@@ -20,10 +20,7 @@ export function Routes() {
     try {
       setIsLoading(true);
 
-      const data = await storageUserGet();
-      setUser(data);
-
-      // console.log(`asdas ${user.username}`);
+      await storageUserGet();
 
     } catch (error) {
       throw error;

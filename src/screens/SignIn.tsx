@@ -10,6 +10,8 @@ import { UserDTO } from "../dtos/UserDTO";
 
 import { useAuth } from "../hooks/useAuth";
 import { AppError } from "../utils/AppError";
+import { storageAuthTokenGet } from "../storage/storageAuthToken";
+import { storageUserGet } from "../storage/storageUser";
 
 
 type FormDataProps = {
@@ -20,13 +22,21 @@ type FormDataProps = {
 
 export function SignIn() {
 
-    const [user, setUsername] = useState<UserDTO>();
     const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>();
     const [isLoading, setIsLoading] = useState(false);
     const { login } = useAuth();
     const toast = useToast();
 
-
+    async function handleDados (){
+        try {
+	        const dataToken = await storageAuthTokenGet();
+	        const dataUser = await storageUserGet()
+	
+	        console.log(dataToken.token, dataUser.username);
+        } catch (error) {
+            return error
+        }
+    }
     async function handleSignIn({ username, password }: FormDataProps) {
         try {
             setIsLoading(true);
@@ -95,6 +105,14 @@ export function SignIn() {
                         largura="full"
                         altura={12}
                         onPress={handleSubmit(handleSignIn)}
+                        isLoading={isLoading}
+                    />
+
+                    <ButtonB
+                        title='ver Dados'
+                        largura="full"
+                        altura={12}
+                        onPress={handleSubmit(handleDados)}
                         isLoading={isLoading}
                     />
                 </Box>

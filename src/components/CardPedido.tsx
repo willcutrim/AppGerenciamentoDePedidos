@@ -1,9 +1,7 @@
-import { Heading, VStack,Text } from "native-base";
+import { Heading, VStack, Text, Image } from "native-base";
 import { ButtonB } from "./Button";
 import { ProdutoDTO } from "../dtos/ProdutosDTO";
-import{ useAsyncStorage } from "@react-native-async-storage/async-storage";
-import { PEDIDOS_COLLETION } from "../storage/storageConfig";
-import { useState } from "react";
+import { api } from "../services/api";
 
 
 type Props = {
@@ -19,6 +17,14 @@ export function CardPedido({data, onpress, isLoading}: Props){
         
         <VStack alignItems='center' justifyContent="center" bg="#663399" mr={6} ml={6} mt={6} rounded={14}>
             <VStack alignItems='center' justifyContent="center" m={6}>
+                <Image
+                    source={{ uri: `${api.defaults.baseURL}${data.photo_do_produto}` }}
+                    alt="Imagem do lanche"
+                    w={130}
+                    h={120}
+                    resizeMode="center"
+                    mt={2}
+                />
                 <Heading color="gray.200">{data.nome_do_produto}</Heading>
                 <Text color="gray.200">{data.descricao_do_produto}</Text>
                 <ButtonB
