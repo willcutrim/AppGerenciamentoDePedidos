@@ -3,13 +3,10 @@ import { UserDTO } from "../dtos/UserDTO";
 import { api } from "../services/api";
 
 import { storageUserDelete, storageUserGet, storageUserSave } from "../storage/storageUser";
-import { storageAuthTokenDelete, storageAuthTokenGet, storageAuthTokenSave } from "../storage/storageAuthToken";
-import { TokensDTO } from "../dtos/TokensDTO";
 
 
 export type AuthContextDataProps = {
     user: UserDTO;
-    tokens: TokensDTO;
     login: (username: string, password: string) => Promise<void>;
     signOut: () => Promise<void>;
 }
@@ -23,19 +20,18 @@ export const AuthContext = createContext<AuthContextDataProps>({} as AuthContext
 export function AuthContextProvider({ children }: AuthContextProviderProps){
     
     const [user, setUser] = useState<UserDTO>({} as UserDTO);
-    const [ tokens, setTokens] = useState<TokensDTO>({} as TokensDTO);
+
+    
 
     async function login(username: string, password: string){
         try {
             const { data } = await api.post('usuario/api-login/', { username, password });
-            if(data.user){
-                // console.log(`pegando do contex => ${data.tokens.access}`);
-                setUser(data.user);
-                setTokens(data.tokens.access);
 
+            if(data.user){
+                setUser(data.user);
+                 
                 await storageUserSave(data.user);
-                await storageAuthTokenSave(data.tokens.access, data.tokens.refresh);
-               
+                
                 
             }
             
@@ -48,7 +44,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps){
         try {
             setUser({} as UserDTO);
             await storageUserDelete();
-            await storageAuthTokenDelete();
         } catch (error) {
             throw error;
         }
@@ -57,26 +52,23 @@ export function AuthContextProvider({ children }: AuthContextProviderProps){
     async function loadUserData(){
         try {
             const userLogged = await storageUserGet();
-            const tokenLogged = await storageAuthTokenGet();
-        
-            if(userLogged && tokenLogged){
-                // console.log('passou aqui')
-                setTokens(tokenLogged);
+            
+            if(userLogged){
                 setUser(userLogged);
-                
             }
         } catch (error) {
 	        throw error
         }
     }
 
+
     useEffect(() => {
         loadUserData();
-    }, [])
+    }, []);
 
-    
+
     return (
-        <AuthContext.Provider value={{user, tokens, login, signOut}}>
+        <AuthContext.Provider value={{user, login, signOut}}>
             {children}
         </AuthContext.Provider>
     );
