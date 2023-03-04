@@ -1,8 +1,8 @@
-import { Heading, VStack, Text, Image } from "native-base";
-import { ButtonB } from "./Button";
+import { Heading, VStack, Text, Image, HStack, Box, Icon } from "native-base";
+import { TouchableOpacity } from 'react-native';
 import { ProdutoDTO } from "../dtos/ProdutosDTO";
 import { api } from "../services/api";
-
+import { MaterialIcons } from '@expo/vector-icons';
 
 type Props = {
     data: ProdutoDTO;
@@ -11,30 +11,41 @@ type Props = {
 }
 
 
-export function CardPedido({data, onpress, isLoading}: Props){
-    
+export function CardPedido({ data, onpress, isLoading }: Props) {
+
     return (
-        
-        <VStack alignItems='center' justifyContent="center" bg="#663399" mr={6} ml={6} mt={6} rounded={14}>
-            <VStack alignItems='center' justifyContent="center" m={6}>
-                <Image
-                    source={{ uri: `${api.defaults.baseURL}${data.photo_do_produto}` }}
-                    alt="Imagem do lanche"
-                    w={130}
-                    h={120}
-                    resizeMode="center"
-                    mt={2}
-                />
-                <Heading color="gray.200">{data.nome_do_produto}</Heading>
-                <Text color="gray.200">{data.descricao_do_produto}</Text>
-                <ButtonB
-                    title='deletar'
-                    onPress={onpress}
-                    largura={32}
-                    altura={12}
-                    isLoading={isLoading}
-                />
-            </VStack>
+
+        <VStack justifyContent="center" bg="#D9D9D9" mr={4} ml={4} mb={4} rounded={14} h={90}>
+            <HStack>
+                <Box bg="#663399" m={15} shadow="5" borderRadius={14} h={75} w={75} justifyContent="center" alignItems="center">
+                    <Image
+                        source={{ uri: `${api.defaults.baseURL}${data.photo_do_produto}` }}
+                        alt="Imagem do lanche"
+                        w={65}
+                        h={60}
+                        resizeMode="center"
+                        mt={2}
+                        mb={2}
+                    />
+                </Box>
+                <VStack justifyContent="center">
+                    <Heading color="#3E3E3E" >{data.nome_do_produto}</Heading>
+                    <Text color="#3E3E3E">{data.descricao_do_produto}</Text>
+                    <Text color="#3E3E3E">Valor Uni. {data.valor_do_produto}</Text>
+                </VStack>
+
+                <Box flex={1} justifyContent="center" alignItems='flex-end' mr={4}>
+                    <TouchableOpacity onPress={onpress}>
+                        <Icon
+                            as={MaterialIcons}
+                            name="delete"
+                            color="#DC3737"
+                            size={7}
+                            onPress={onpress}
+                        />
+                    </TouchableOpacity>
+                </Box>
+            </HStack>
         </VStack>
     );
 }

@@ -1,4 +1,4 @@
-import { FlatList, VStack, Text, Center, Box } from "native-base";
+import { FlatList, VStack, Text, Center, Box, HStack, Heading } from "native-base";
 import { AppBar } from "../components/AppBar";
 
 import { useEffect, useState } from "react";
@@ -17,7 +17,7 @@ import { storageUserDelete, storageUserGet } from "../storage/storageUser";
 import { storageAuthTokenDelete, storageAuthTokenGet } from "../storage/storageAuthToken";
 
 
-export function Carrinho(){
+export function Carrinho() {
 
     const [isLoading, setIsLoading] = useState(false);
     const navigation = useNavigation<AppNavigatorRoutesProps>();
@@ -25,31 +25,31 @@ export function Carrinho(){
 
     const { getItem, setItem } = useAsyncStorage(PEDIDOS_COLLETION);
 
-    async function cleanItems(){
+    async function cleanItems() {
         try {
             setIsLoading(true);
             await storagePedidoDelete();
             const response = await getItem();
-	        const previousData = response ? JSON.parse(response) : [];
+            const previousData = response ? JSON.parse(response) : [];
 
             setPedido(previousData);
-            
+
         } catch (error) {
             throw error;
         } finally {
             setIsLoading(false);
         }
     }
-    async function handleRemoveItem(uid: string){
+    async function handleRemoveItem(uid: string) {
         try {
             setIsLoading(true);
 
-            
-	        const response = await getItem();
-	        const previousData = response ? JSON.parse(response) : [];
-	
-	        const data = previousData.filter((item: ProdutoDTO) => item.uid !== uid);
-	        setItem(JSON.stringify(data));
+
+            const response = await getItem();
+            const previousData = response ? JSON.parse(response) : [];
+
+            const data = previousData.filter((item: ProdutoDTO) => item.uid !== uid);
+            setItem(JSON.stringify(data));
             setPedido(data);
         } catch (error) {
             throw error;
@@ -59,15 +59,15 @@ export function Carrinho(){
 
     }
 
-    async function handleNavigatio(){
+    async function handleNavigatio() {
         navigation.goBack();
     }
 
-    async function fetchItems(){
+    async function fetchItems() {
         try {
             setIsLoading(true);
-            
-            const storage =  await getItem();
+
+            const storage = await getItem();
 
             const pedidos = storage ? JSON.parse(storage) : [];
 
@@ -85,39 +85,43 @@ export function Carrinho(){
 
     return (
         <VStack flex={1}>
-            <AppBar title="Carrinho" onpress={handleNavigatio} icon="arrow-back"/>
+            <AppBar title="Carrinho" onpress={handleNavigatio} icon="arrow-back" />
             {
-            isLoading ? <Loading/> :
-            
-            
-            <FlatList
-                data={pedido}
-                keyExtractor={item => item.uid}
-                renderItem={({ item }) => (
-                    <CardPedido
-                        data={item}
-                        onpress={() =>handleRemoveItem(item.uid)}
+                isLoading ? <Loading /> :
+
+
+                    <FlatList
+                        data={pedido}
+                        keyExtractor={item => item.uid}
+                        renderItem={({ item }) => (
+                            <CardPedido
+                                data={item}
+                                onpress={() => handleRemoveItem(item.uid)}
+                            />
+                        )}
+                        ListEmptyComponent={() => (
+                            <Center flex={1}>
+                                <Text color="black" textAlign="center" >
+                                    Não há pedidos
+                                </Text>
+                            </Center>
+                        )}
+                        _contentContainerStyle={{ paddingBottom: 8 }}
                     />
-                    )}
-                    ListEmptyComponent={() => (
-                        <Center flex={1}>
-                            <Text color="black" textAlign="center" >
-                                Não há pedidos
-                            </Text>
-                        </Center>
-                      )}
-                      _contentContainerStyle={{ paddingBottom: 20 }}
-            />
-        }
-        <Box alignItems="center">
-            <ButtonB
-                title="Limpar"
-                onPress={cleanItems}
-                largura="full"
-                altura={12}
-            />
-        </Box>
+            }
+            <HStack justifyContent="space-around" alignItems='center' h={100} w="full" bg="#D9D9D9" mb={4} mt={2}>
+                <Text fontWeight="bold" fontSize={18}>MESA 3</Text>
+                <Text fontWeight="bold" fontSize={18}>TOTAL: 150</Text>
+            </HStack>
+            <Box mr={5} ml={5}>
+                <ButtonB
+                    title="Fechar pedido"
+                    onPress={() => ({})}
+                    largura="full"
+                    altura={12}
+                />
+            </Box>
         </VStack>
-        
-    );    
+
+    );
 }
