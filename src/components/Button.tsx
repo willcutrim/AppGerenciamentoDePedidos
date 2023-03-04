@@ -10,7 +10,8 @@ type Props = IButtonProps &{
 
 export function ButtonB({title, altura, largura, variant = "solid", ...rest}: Props){
     return(
-        <ButtonNativeBase 
+        <ButtonNativeBase
+            
             w={largura}
             h={altura} 
             bg={ variant === "outline" ? "transparent" : "green.700" }
@@ -20,7 +21,7 @@ export function ButtonB({title, altura, largura, variant = "solid", ...rest}: Pr
             _pressed={{
                 bg: variant === "outline" ? "gray.500" : "green.500"
             }}
-            mb={2}
+            mb={1}
             {...rest}
         >
 

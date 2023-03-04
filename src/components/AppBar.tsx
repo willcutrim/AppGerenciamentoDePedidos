@@ -53,6 +53,7 @@ export function AppBar({ title, icon ,onpress }: Props){
             pt={6} 
             pb={5} 
             px={8} 
+            mb={4}
             alignItems="center" 
             justifyContent="space-between"
             safeArea
@@ -67,7 +68,7 @@ export function AppBar({ title, icon ,onpress }: Props){
                 />
             </TouchableOpacity>
 
-            <Heading color="white">{title} - {userata?.username}</Heading>
+            <Heading color="white">{title}</Heading>
 
             <TouchableOpacity onPress={onpress}>
                 <Icon

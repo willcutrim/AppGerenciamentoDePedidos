@@ -72,7 +72,6 @@ export function CardProduto({ data, onpress }: Props){
                 w={130}
                 h={120}
                 resizeMode="center"
-                mt={2}
             />
 
             <Heading color="gray.200">{data.nome_do_produto}</Heading>
