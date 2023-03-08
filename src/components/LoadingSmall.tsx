@@ -1,12 +1,12 @@
 import { Spinner, Center } from 'native-base';
 
 
-export function Loading(){
+export function LoadingSmall(){
     return (
-        <Center flex={1} bg='white'>
+        <Center bg='#D9D9D9' h={25} w={25}>
             <Spinner
                 color="#663399"
-                size={50}
+                size={25}
             />
         </Center>
     );

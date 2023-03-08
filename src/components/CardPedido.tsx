@@ -15,9 +15,9 @@ export function CardPedido({ data, onpress, isLoading }: Props) {
 
     return (
 
-        <VStack justifyContent="center" bg="#D9D9D9" mr={4} ml={4} mb={4} rounded={14} h={90}>
+        <VStack justifyContent="center" bg="#D9D9D9" mr={4} ml={4} mb={4} rounded={7} h={90} shadow="2">
             <HStack>
-                <Box bg="#663399" m={15} shadow="5" borderRadius={14} h={75} w={75} justifyContent="center" alignItems="center">
+                <Box bg="#663399" m={15} shadow="5" borderRadius={5} h={75} w={75} justifyContent="center" alignItems="center">
                     <Image
                         source={{ uri: `${api.defaults.baseURL}${data.photo_do_produto}` }}
                         alt="Imagem do lanche"
