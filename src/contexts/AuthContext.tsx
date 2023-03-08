@@ -29,10 +29,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps){
 
             if(data.user){
                 setUser(data.user);
-                 
                 await storageUserSave(data.user);
-                
-                
             }
             
         } catch (error) {

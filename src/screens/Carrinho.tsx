@@ -13,8 +13,10 @@ import { useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "../routes/app.routes";
 import { storagePedidoDelete } from "../storage/pedidos/pedidoDelete";
 import { ButtonB } from "../components/Button";
-import { storageUserDelete, storageUserGet } from "../storage/storageUser";
-import { storageAuthTokenDelete, storageAuthTokenGet } from "../storage/storageAuthToken";
+import { LoadingSmall } from "../components/LoadingSmall";
+import { api } from "../services/api";
+import { useAuth } from '../hooks/useAuth';
+
 
 
 export function Carrinho() {
@@ -22,8 +24,56 @@ export function Carrinho() {
     const [isLoading, setIsLoading] = useState(false);
     const navigation = useNavigation<AppNavigatorRoutesProps>();
     const [pedido, setPedido] = useState<ProdutoDTO[]>([])
-
+    const [valorTotal, setValorTotal] = useState<string>();
+    const { user } = useAuth();
     const { getItem, setItem } = useAsyncStorage(PEDIDOS_COLLETION);
+
+    async function finishRequest() {
+        try {
+            const data = {
+                usuario: user.username,
+                nome_do_cliente: "gabigol",
+                valor_da_compra: valorTotal,
+                pedidos: pedido.map((pedido) => pedido.id),
+                numero_da_mesa: [
+                    3
+                ]
+            }
+            
+            const response = await api.post('pedidos-create/', [data])
+            
+            if (response.status === 201) {
+                cleanItems()
+                handleNavigatio()
+            } else {
+                console.log('deu merda');
+            }
+        } catch (error) {
+            console.log(error)
+        }
+        
+    }
+
+
+    async function calc() {
+        try {
+            setIsLoading(true)
+            const storage = await getItem();
+            const pedidos = storage ? JSON.parse(storage) : [];
+            let sum = 0;
+            for (const key in pedidos) {
+
+                sum += Number(pedidos[key]['valor_do_produto']);
+                // console.log(typeof Number(pedidos[key]['valor_do_produto']))
+            }
+            const valor = sum.toFixed(2)
+            setValorTotal(valor)
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
     async function cleanItems() {
         try {
@@ -78,6 +128,9 @@ export function Carrinho() {
             setIsLoading(false);
         }
     }
+    useEffect(() => {
+        calc();
+    }, [pedido])
 
     useEffect(() => {
         fetchItems();
@@ -88,8 +141,6 @@ export function Carrinho() {
             <AppBar title="Carrinho" onpress={handleNavigatio} icon="arrow-back" />
             {
                 isLoading ? <Loading /> :
-
-
                     <FlatList
                         data={pedido}
                         keyExtractor={item => item.uid}
@@ -111,14 +162,17 @@ export function Carrinho() {
             }
             <HStack justifyContent="space-around" alignItems='center' h={100} w="full" bg="#D9D9D9" mb={4} mt={2}>
                 <Text fontWeight="bold" fontSize={18}>MESA 3</Text>
-                <Text fontWeight="bold" fontSize={18}>TOTAL: 150</Text>
+                {isLoading ? <LoadingSmall /> :
+                    <Text fontWeight="bold" fontSize={18}>TOTAL: {valorTotal}</Text>
+                }
             </HStack>
             <Box mr={5} ml={5}>
                 <ButtonB
                     title="Fechar pedido"
-                    onPress={() => ({})}
+                    onPress={finishRequest}
                     largura="full"
                     altura={12}
+
                 />
             </Box>
         </VStack>
