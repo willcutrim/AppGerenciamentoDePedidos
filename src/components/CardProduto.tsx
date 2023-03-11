@@ -72,8 +72,9 @@ export function CardProduto({ data, onpress }: Props) {
                 <Image
                     source={{ uri: `${api.defaults.baseURL}${data.photo_do_produto}` }}
                     alt="hamburger"
-                    h={90}
-                    w={115}
+                    h={100}
+                    w={120}
+                    resizeMode='contain'
                 />
             </Box>
 
