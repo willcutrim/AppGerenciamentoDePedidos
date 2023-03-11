@@ -14,9 +14,10 @@ export function ButtonB({title, altura, largura, variant = "solid", ...rest}: Pr
             
             w={largura}
             h={altura} 
-            bg={ variant === "outline" ? "transparent" : "green.700" }
+            bg={ variant === "outline" ? "transparent" : "#007566" }
             borderWidth={ variant === "outline" ? 1 : 0}
-            borderColor="green.500"
+            borderColor="#265C4B"
+            shadow='1'
             rounded={8}
             _pressed={{
                 bg: variant === "outline" ? "gray.500" : "green.500"

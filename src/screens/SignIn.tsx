@@ -1,4 +1,4 @@
-import { Box, Heading, ScrollView, VStack, useToast } from "native-base";
+import { Box, Heading, ScrollView, VStack, useToast, Image } from "native-base";
 import { Controller, useForm } from 'react-hook-form';
 
 import { Input } from "../components/Input";
@@ -6,7 +6,7 @@ import { ButtonB } from "../components/Button";
 
 import { useState } from "react";
 
-import { UserDTO } from "../dtos/UserDTO";
+import LogoSvg from '../assets/logo.png';
 
 import { useAuth } from "../hooks/useAuth";
 import { AppError } from "../utils/AppError";
@@ -58,13 +58,16 @@ export function SignIn() {
 
     return (
         
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} bg="#663399">
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} bg="#265C4B">
             <VStack flex={1} px={10} alignItems='center' justifyContent='center'>
 
                 <Box h="50%" w="100%" justifyContent='center' alignItems='center'>
-                    <Heading color="white">
-                        Merenda Boa
-                    </Heading>
+                    <Image 
+                        source={LogoSvg}
+                        alt="Logo da marca"
+                        resizeMode="contain"
+                        position='absolute'
+                    />
                 </Box>
                 <Box h="50%" w="100%">
                     <Controller
@@ -108,13 +111,6 @@ export function SignIn() {
                         isLoading={isLoading}
                     />
 
-                    <ButtonB
-                        title='ver Dados'
-                        largura="full"
-                        altura={12}
-                        onPress={handleSubmit(handleDados)}
-                        isLoading={isLoading}
-                    />
                 </Box>
             </VStack>
         </ScrollView>
